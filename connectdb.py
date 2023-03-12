@@ -1,10 +1,7 @@
 # import database library
 from sshtunnel import SSHTunnelForwarder
 import pymongo
-import urllib
-import pprint
-
-import configure as conf
+import configures as conf
 
 param = conf
 

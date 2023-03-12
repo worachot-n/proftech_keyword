@@ -1,24 +1,6 @@
 # Import libraries
-import pandas as pd
-import numpy as np
-import re
-import string
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-
-from pythainlp.corpus import (thai_stopwords,
-                              thai_words,
-                              thai_syllables,
-                              thai_family_names,
-                              thai_female_names,
-                              thai_male_names)
-from pythainlp.corpus.ttc import word_freqs
-from pythainlp.tokenize import word_tokenize
-from pythainlp.util import normalize
-from pythainlp.util import dict_trie
-from pythainlp import Tokenizer
 from pythainlp.tag import pos_tag, pos_tag_sents
-import configure as conf
+import configures as conf
 from tokenize_word import tokenize_word, hashtag_keyword
 
 
@@ -58,8 +40,17 @@ def find_word(content_list):
         if len(text_list) <= 5:
             set1 = set(words_NCMN[i])
             list1 = [sorted(set1, key=lambda x: len(x), reverse=True)]
-            select = 10-len(text_list)
-            print(list1[0][:select])
+            select = 5-len(text_list)
+            # print(list1[0][:select])
+            keyword[i].extend(list1[0][:select])
+        elif len(text_list) == 0:
+            tag_word[i] = pos_tag_sents(words_list[i])
+            words_NCMN[i] = [[(element[0]) for element in sub_arr]
+                             for sub_arr in tag_word[i]]
+            set1 = set(words_NCMN[i])
+            list1 = [sorted(set1, key=lambda x: len(x), reverse=True)]
+            select = 5-len(text_list)
+            # print(list1[0][:select])
             keyword[i].extend(list1[0][:select])
 
     return words_NCMN, keyword

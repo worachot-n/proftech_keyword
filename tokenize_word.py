@@ -9,16 +9,13 @@ from pythainlp.corpus.ttc import word_freqs
 from pythainlp.tokenize import word_tokenize
 from pythainlp.util import normalize
 from pythainlp.util import dict_trie
-from pythainlp import Tokenizer
 import clean_text
 import connectdb
-import configure as conf
+import configures as conf
 
 # import database library
 from sshtunnel import SSHTunnelForwarder
 import pymongo
-import urllib
-import pprint
 
 
 param = conf

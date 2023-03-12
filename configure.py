@@ -1,15 +1,17 @@
-# set parameter
-BASTION_HOST = "178.128.31.43"
-BASTION_USER = "root"
-BASTION_PASS = "POC_2020AION"
 
-DB_HOST = '10.130.143.184'
-DB_PORT = 27017
-DB_USER = 'root'
-DB_PASS = 'POC_2020AION'
-DB_AUTH_SOURCE = 'admin'
-DB_AUTH_MECH = 'SCRAM-SHA-1'
-DB_NAME = 'aion'
 
-LOCAL_BIND_HOST = '127.0.0.1'
-LOCAL_BIND_PORT = 27017
+chrome_headless = True
+
+userdb = "agentai"
+passworddb = "Xx@ukiSDw32dddb"
+hostdb = "128.199.73.147"
+dbname = "proftech"
+
+# path = "/home/agentai/phawit/Projects/news_predict/"
+path = "D:/Coding/proftech/model/"
+batch_size = 20
+
+# userdb = "root"
+# passworddb = ""
+# hostdb="localhost"
+# dbname="proftech"
