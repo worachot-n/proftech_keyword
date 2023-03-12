@@ -43,7 +43,7 @@ def update_db_list(id, ai_dc, ai_sp, ai_hc, ai_ml, ai_hm, ai_words, ai_keywords)
 
 
 # sqlx="SELECT id,news_title,news_content FROM newsai ORDER BY id desc "
-sqlx = "SELECT id, news_title, news_content FROM newsai WHERE ai2_digital_culture IS NULL ORDER BY id DESC LIMIT 100"
+sqlx = "SELECT id, news_title, news_content FROM newsai WHERE ai2_digital_culture IS NULL ORDER BY id DESC"
 myresult = db.query(sqlx)
 print('Total Data unlabeled', len(myresult))
 
