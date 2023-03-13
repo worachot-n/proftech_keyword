@@ -7,9 +7,10 @@ from tokenize_word import tokenize_word, hashtag_keyword
 def find_word(content_list):
     # ai_oganic_news = model.predict_fake(content_list)
     words_list = tokenize_word(content_list)
-    print(words_list)
+    # print(words_list)
     tag_word = pos_tag_sents(words_list)
-    print(tag_word)
+    # tag_word = [pos_tag(element) for element in words_list]
+    # print(tag_word)
     words_NCMN = [[(element[0]) for element in sub_arr if element[1] == 'NCMN']
                   for sub_arr in tag_word]
     # words = [[(element[0]) for element in sub_arr]
@@ -39,8 +40,26 @@ def find_word(content_list):
             set1 = set(words_NCMN[i])
             list1 = [sorted(set1, key=lambda x: len(x), reverse=True)]
             select = 5-len(text_list)
+            listnotduplicate = [
+                word for word in list1[0] if not word in keyword[i]]
             # print(list1[0][:select])
-            keyword[i].extend(list1[0][:select])
+            keyword[i].extend(listnotduplicate[:select])
+            # print(len(keyword[i]))
+            if len(keyword[i]) < 5:
+                # print(words_list[i])
+                tag_word[i] = pos_tag(words_list[i])
+                # print(tag_word[i])
+                words_NCMN[i] = [(element[0]) for element in tag_word[i]]
+                # print(words_NCMN[i])
+                set1 = set(words_NCMN[i])
+                list1 = [sorted(set1, key=lambda x: len(x), reverse=True)]
+                select = 5-len(keyword[i])
+                # print(list1[0])
+                # print(keyword[i])
+                listnotduplicate = [
+                    word for word in list1[0] if not word in keyword[i]]
+                # print(listnotduplicate)
+                keyword[i].extend(listnotduplicate[:select])
         elif len(text_list) == 0:
             tag_word[i] = pos_tag_sents(words_list[i])
             words_NCMN[i] = [[(element[0]) for element in sub_arr]
@@ -50,6 +69,21 @@ def find_word(content_list):
             select = 5-len(text_list)
             # print(list1[0][:select])
             keyword[i].extend(list1[0][:select])
+            if len(keyword[i]) < 5:
+                # print(words_list[i])
+                tag_word[i] = pos_tag(words_list[i])
+                # print(tag_word[i])
+                words_NCMN[i] = [(element[0]) for element in tag_word[i]]
+                # print(words_NCMN[i])
+                set1 = set(words_NCMN[i])
+                list1 = [sorted(set1, key=lambda x: len(x), reverse=True)]
+                select = 5-len(keyword[i])
+                # print(list1[0])
+                # print(keyword[i])
+                listnotduplicate = [
+                    word for word in list1[0] if not word in keyword[i]]
+                # print(listnotduplicate)
+                keyword[i].extend(listnotduplicate[:select])
 
     return words_NCMN, keyword
 
