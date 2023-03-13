@@ -25,7 +25,8 @@ def update_db_list(id, ai_dc, ai_sp, ai_hc, ai_ml, ai_hm, ai_words, ai_keywords)
     print(len(id))
     print(len(ai_dc))
     for i in range(len(id)):
-        sql = "UPDATE newsai SET ai2_digital_culture=%s, ai2_soft_power=%s, ai2_healthcare=%s, ai2_make_a_living=%s, ai2_harmony=%s, ai2_list_word=%s, ai2_noun=%s where id=%s"
+        sql = "UPDATE newsai SET ai2_digital_culture=%s, ai2_soft_power=%s, ai2_healthcare=%s, \
+            ai2_make_a_living=%s, ai2_harmony=%s, ai2_list_word=%s, ai2_noun=%s where id=%s"
         val = (ai_dc[i], ai_sp[i], ai_hc[i], ai_ml[i],
                ai_hm[i], ai_words[i], ai_keywords[i], id[i])
         V.append(val)

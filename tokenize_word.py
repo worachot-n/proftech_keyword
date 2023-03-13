@@ -85,7 +85,7 @@ def tokenize_word(text):
     words = []
     for i, text in enumerate(text):
         tokenText = word_tokenize(
-            text, engine='nercut', custom_dict=trie, keep_whitespace=False)  # Using 'nercut'
+            text, engine='newmm', custom_dict=trie, keep_whitespace=False)  # Using 'nercut'
         tokenText = [normalize(word)
                      for word in tokenText]  # Normalization word
         # print(tokenText)
