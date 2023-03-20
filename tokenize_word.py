@@ -9,16 +9,7 @@ from pythainlp.corpus import (thai_stopwords,
 from pythainlp.corpus.ttc import word_freqs
 from pythainlp.tokenize import word_tokenize
 from pythainlp.util import normalize
-from pythainlp.util import dict_trie
 import clean_text
-import connectdb
-import configures as conf
-
-
-param = conf
-
-db = connectdb.connection[param.DB_NAME]
-# print(db.list_collection_names())
 
 
 # Word preparation
@@ -52,37 +43,8 @@ syntax_list = ['', '.', 'ๆ', 'ฯ', '“', '"', "‘", "’",
                "'“", "”'", "\"'", "'‘", "’'", "'", "''", "'“", "”'"]
 
 
-def hashtag_keyword():
-    hashtag = db.hashtag_list.find()
-    hashtag = [x for x in hashtag]
-    hashtag_list = [sublist['uid'] for sublist in hashtag]
-    hashtag_clean = list(map(clean_text.cleanText_Pandas, hashtag_list))
-    # print(len(hashtag_clean))
-
-    keywords = db.object.find()
-    keywords = [x for x in keywords]
-    keywords_list = [
-        item for sublist in keywords for item in sublist['keywords']]
-    keywords_clean = list(map(clean_text.cleanText_Pandas, keywords_list))
-    # print(len(keywords_clean))
-
-    hashtags_set = set(hashtag_clean)
-    keywords_set = set(keywords_clean)
-    bag_word = hashtags_set.union(keywords_set)
-    # print(len(bag_word))
-    return bag_word
-
-
-bag_word = hashtag_keyword()
-
-# add multiple words
-custom_words_list = set(thai_words())
-custom_words_list.update(bag_word)
-trie = dict_trie(dict_source=custom_words_list)
-
-
 # Tokenize
-def tokenize_word(text):
+def tokenize_word(text, trie):
     text_clean = list(map(clean_text.cleanText_Pandas, text))
     words = []
     for i, text in enumerate(text_clean):

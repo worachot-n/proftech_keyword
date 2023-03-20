@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 from pythainlp.tag import pos_tag, pos_tag_sents
 import configures as conf
-from tokenize_word import tokenize_word, hashtag_keyword
+from tokenize_word import tokenize_word
+
+# bag_word_db = hashtag_keyword()
 
 
-def find_word(content_list):
+def find_word(content_list, bag_word_db, trie):
     # ai_oganic_news = model.predict_fake(content_list)
-    words_list = tokenize_word(content_list)
+    words_list = tokenize_word(content_list, trie)
     # print(words_list)
     tag_word = pos_tag_sents(words_list)
     # tag_word = [pos_tag(element) for element in words_list]
@@ -17,7 +19,7 @@ def find_word(content_list):
     #          for sub_arr in tag_word]
     # print(words_NCMN)
 
-    bag_word = hashtag_keyword()
+    bag_word = bag_word_db
     # print(bag_word)
 
     tag_list = list(bag_word)

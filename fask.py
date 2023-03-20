@@ -7,6 +7,13 @@ import torch
 from transformers import AutoModelForSequenceClassification
 from transformers import AutoTokenizer
 from flask import Flask, jsonify, make_response
+import select_word_keyword
+import connectdb
+import configures as confs
+from pythainlp.corpus import thai_words
+from pythainlp.util import dict_trie
+import clean_text
+
 
 app = Flask(__name__)
 
@@ -16,6 +23,42 @@ app = Flask(__name__)
 MAX_LENGTH = 416
 
 path = conf.path
+
+param = confs
+
+dbs = connectdb.connection[param.DB_NAME]
+# print(db.list_collection_names())
+hashtag_db = dbs.hashtag_list.find()
+keywords_db = dbs.object.find()
+
+
+def hashtag_keyword():
+    hashtag = hashtag_db
+    hashtag = [x for x in hashtag]
+    hashtag_list = [sublist['uid'] for sublist in hashtag]
+    hashtag_clean = list(map(clean_text.cleanText_Pandas, hashtag_list))
+    # print(len(hashtag_clean))
+
+    keywords = keywords_db
+    keywords = [x for x in keywords]
+    keywords_list = [
+        item for sublist in keywords for item in sublist['keywords']]
+    keywords_clean = list(map(clean_text.cleanText_Pandas, keywords_list))
+    # print(len(keywords_clean))
+
+    hashtags_set = set(hashtag_clean)
+    keywords_set = set(keywords_clean)
+    bag_word = hashtags_set.union(keywords_set)
+    # print(len(bag_word))
+    return bag_word
+
+
+bag_word_db = hashtag_keyword()
+
+# add multiple words
+custom_words_list = set(thai_words())
+custom_words_list.update(bag_word_db)
+trie = dict_trie(dict_source=custom_words_list)
 
 model_dc = AutoModelForSequenceClassification.from_pretrained(
     path+'protech_model/wisesight_sentiment_wangchanberta_digital_culture/')
@@ -48,7 +91,6 @@ def predict_dc(content_list):
         pred_test = F.softmax(output_test.logits, dim=1)
         labels_dc_num = torch.argmax(pred_test, dim=1)
         labels_dc = [class_label[label] for label in labels_dc_num.numpy()]
-        percen = [max(x) for x in pred_test.tolist()]
         return labels_dc
 
 
@@ -61,7 +103,6 @@ def predict_sp(content_list):
         pred_test = F.softmax(output_test.logits, dim=1)
         labels_sp_num = torch.argmax(pred_test, dim=1)
         labels_sp = [class_label[label] for label in labels_sp_num.numpy()]
-        percen = [max(x) for x in pred_test.tolist()]
         return labels_sp
 
 
@@ -74,7 +115,6 @@ def predict_hc(content_list):
         pred_test = F.softmax(output_test.logits, dim=1)
         labels_hc_num = torch.argmax(pred_test, dim=1)
         labels_hc = [class_label[label] for label in labels_hc_num.numpy()]
-        percen = [max(x) for x in pred_test.tolist()]
         return labels_hc
 
 
@@ -87,7 +127,6 @@ def predict_ml(content_list):
         pred_test = F.softmax(output_test.logits, dim=1)
         labels_ml_num = torch.argmax(pred_test, dim=1)
         labels_ml = [class_label[label] for label in labels_ml_num.numpy()]
-        percen = [max(x) for x in pred_test.tolist()]
         return labels_ml
 
 
@@ -100,7 +139,6 @@ def predict_hm(content_list):
         pred_test = F.softmax(output_test.logits, dim=1)
         labels_hm_num = torch.argmax(pred_test, dim=1)
         labels_hm = [class_label[label] for label in labels_hm_num.numpy()]
-        percen = [max(x) for x in pred_test.tolist()]
         return labels_hm
 
 
@@ -129,7 +167,7 @@ def greet(name):
     ai_ml = predict_ml(text)
     ai_hm = predict_hm(text)
     ai_words_list, ai_keywords_list = select_word_keyword.find_word(
-        text)
+        text, bag_word_db, trie)
     ai_words = [', '.join(inner_list) for inner_list in ai_words_list]
     ai_keywords = [', '.join(inner_list) for inner_list in ai_keywords_list]
 
